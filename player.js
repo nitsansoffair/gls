@@ -110,17 +110,6 @@ const removeTooltip = (step) => {
 
 const tests = () => {
     for(let step = 0; step < steps.length; step++){
-        if(step === steps.length){
-            removeTooltip(step - 1);
-
-            let tooltipDiv = document.querySelector('#tooltipdiv');
-            if(tooltipDiv){
-                throw new Error(`Tooltip div at step: ${step} should not exists!`);
-            }
-
-            return;
-        }
-
         const { parentSelector, parentSelectorNumber = 0, selector, content, tooltipTextStyles } = steps[step];
 
         const container = document.querySelectorAll(parentSelector)[parentSelectorNumber];
@@ -135,15 +124,6 @@ const tests = () => {
 
         steps[step].parentHTML = container;
 
-        if(step > 0){
-            removeTooltip(step - 1)
-        }
-
-        let tooltipDiv = document.querySelector('#tooltipdiv');
-        if(tooltipDiv){
-            throw new Error(`Tooltip div at step: ${step} should not exists!`);
-        }
-
         container.removeChild(element);
         container.innerHTML += `
             <div id="tooltipdiv" class="tooltip">
@@ -153,7 +133,7 @@ const tests = () => {
             </div> 
     `;
 
-        tooltipDiv = document.querySelector('#tooltipdiv');
+        let tooltipDiv = document.querySelector('#tooltipdiv');
         if(!tooltipDiv){
             throw new Error(`Tooltip div at step: ${step} should exists!`);
         }
@@ -164,12 +144,21 @@ const tests = () => {
         }
 
         removeTooltip(step);
+
+        tooltipDiv = document.querySelector('#tooltipdiv');
+        if(tooltipDiv){
+            throw new Error(`Tooltip div at step: ${step} should not exists!`);
+        }
     }
 
     console.log('Tests passed!');
 };
 
-tests();
+try {
+    tests();
+} catch (e) {
+    console.log(`A test has been failed: ${e.stack}`);
+}
 
 appendStyle();
 
