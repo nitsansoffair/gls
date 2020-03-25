@@ -162,9 +162,9 @@ const tests = () => {
         if(!tooltipDiv.querySelector(selector)){
             throw new Error(`Element with selector: ${selector} should be inside tooltip div!`);
         }
-    }
 
-    removeTooltip(steps.length - 1);
+        removeTooltip(step);
+    }
 
     console.log('Tests passed!');
 };
