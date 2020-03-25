@@ -115,7 +115,7 @@ const tests = () => {
 
             let tooltipDiv = document.querySelector('#tooltipdiv');
             if(tooltipDiv){
-                throw new Error('Tooltip div should not exists!');
+                throw new Error(`Tooltip div at step: ${step} should not exists!`);
             }
 
             return;
@@ -125,12 +125,12 @@ const tests = () => {
 
         const container = document.querySelectorAll(parentSelector)[parentSelectorNumber];
         if(!container){
-            throw new Error('Container should exists!');
+            throw new Error(`Container with selector: ${parentSelector} should exists!`);
         }
 
         const element = document.querySelector(selector);
         if(!element){
-            throw new Error('Element should exists!');
+            throw new Error(`Element with selector ${selector} should exists!`);
         }
 
         steps[step].parentHTML = container;
@@ -141,7 +141,7 @@ const tests = () => {
 
         let tooltipDiv = document.querySelector('#tooltipdiv');
         if(tooltipDiv){
-            throw new Error('Tooltip div should not exists!');
+            throw new Error(`Tooltip div at step: ${step} should not exists!`);
         }
 
         container.removeChild(element);
@@ -155,12 +155,12 @@ const tests = () => {
 
         tooltipDiv = document.querySelector('#tooltipdiv');
         if(!tooltipDiv){
-            throw new Error('Tooltip div should exists!');
+            throw new Error(`Tooltip div at step: ${step} should exists!`);
         }
 
         tooltipDiv.appendChild(element);
         if(!tooltipDiv.querySelector(selector)){
-            throw new Error('Element should be inside tooltip div!');
+            throw new Error(`Element with selector: ${selector} should be inside tooltip div!`);
         }
     }
 
