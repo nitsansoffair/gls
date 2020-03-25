@@ -26,9 +26,14 @@ const steps = [
         `
     },
     {
-        parentSelector: '.hpuQDe',
-        selector: '.HPVvwb',
+        parentSelector: '.iblpc',
+        selector: '.hsuHs',
         content: '<p>Click here to search</p>\n',
+        tooltipTextStyles: `
+            bottom: 22px;
+            right: 12px;
+            width: 100px;
+        `
     }
 ];
 
