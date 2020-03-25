@@ -108,6 +108,69 @@ const removeTooltip = (step) => {
     prevContainer.appendChild(prevElement);
 };
 
+const tests = () => {
+    for(let step = 0; step < steps.length; step++){
+        if(step === steps.length){
+            removeTooltip(step - 1);
+
+            let tooltipDiv = document.querySelector('#tooltipdiv');
+            if(tooltipDiv){
+                throw new Error('Tooltip div should not exists!');
+            }
+
+            return;
+        }
+
+        const { parentSelector, parentSelectorNumber = 0, selector, content, tooltipTextStyles } = steps[step];
+
+        const container = document.querySelectorAll(parentSelector)[parentSelectorNumber];
+        if(!container){
+            throw new Error('Container should exists!');
+        }
+
+        const element = document.querySelector(selector);
+        if(!element){
+            throw new Error('Element should exists!');
+        }
+
+        steps[step].parentHTML = container;
+
+        if(step > 0){
+            removeTooltip(step - 1)
+        }
+
+        let tooltipDiv = document.querySelector('#tooltipdiv');
+        if(tooltipDiv){
+            throw new Error('Tooltip div should not exists!');
+        }
+
+        container.removeChild(element);
+        container.innerHTML += `
+            <div id="tooltipdiv" class="tooltip">
+                <span class="tooltiptext" onclick="createTooltip(${step} + 1)" style="${tooltipTextStyles}">
+                    ${content}
+                </span>   
+            </div> 
+    `;
+
+        tooltipDiv = document.querySelector('#tooltipdiv');
+        if(!tooltipDiv){
+            throw new Error('Tooltip div should exists!');
+        }
+
+        tooltipDiv.appendChild(element);
+        if(!tooltipDiv.querySelector(selector)){
+            throw new Error('Element should be inside tooltip div!');
+        }
+    }
+
+    removeTooltip(steps.length - 1);
+
+    console.log('Tests passed!');
+};
+
+tests();
+
 appendStyle();
 
 createTooltip();
