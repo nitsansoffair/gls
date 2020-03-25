@@ -130,7 +130,7 @@ const tests = () => {
 
         const element = document.querySelector(selector);
         if(!element){
-            throw new Error(`Element with selector ${selector} should exists!`);
+            throw new Error(`Element with selector: ${selector} should exists!`);
         }
 
         steps[step].parentHTML = container;
