@@ -20,7 +20,7 @@ const steps = [
         selector: '.RNNXgb',
         content: '<p>Enter a search query here and click ENTER!</p>\n',
         tooltipTextStyles: `
-            top: 75px;
+            top: 47px;
             right: 450px;      
             bottom: unset;  
         `
