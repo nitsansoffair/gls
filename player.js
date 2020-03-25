@@ -1,30 +1,3 @@
-const style = document.createElement('style');
-
-style.innerHTML = `
-.tooltip {
-    position: relative;
-}
-
-.tooltip .tooltiptext {    
-    visibility: hidden;
-    bottom: 60%;
-    background-color: black;
-    color: #fff;
-    padding: 5px;
-    border-radius: 6px;
-    text-align: center;
-    
-    position: absolute;
-    z-index: 1;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-}
-  `;
-
-document.head.appendChild(style);
-
 const steps = [
     {
         parentSelector: '#lga',
@@ -39,22 +12,54 @@ const steps = [
         tooltipTextStyles: `
             bottom: unset;
             left: -100px;
-            top: 26px;
+            top: 25px;
         `
     },
     {
-        parentSelector: '.SDkEP',
-        selector: '.a4bIc',
-        content: '<p>Enter a search query here and click ENTER!</p>\n'
+        parentSelector: '.A8SBwf',
+        selector: '.RNNXgb',
+        content: '<p>Enter a search query here and click ENTER!</p>\n',
+        tooltipTextStyles: `
+            top: 75px;
+            right: 450px;      
+            bottom: unset;  
+        `
     },
     {
-        parentSelector: '.SDkEP',
-        selector: '.iblpc',
+        parentSelector: '.hpuQDe',
+        selector: '.HPVvwb',
         content: '<p>Click here to search</p>\n',
     }
 ];
 
+const appendStyle = () => {
+    const style = document.createElement('style');
 
+    style.innerHTML = `
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip .tooltiptext {    
+            visibility: hidden;
+            bottom: 60%;
+            background-color: black;
+            color: #fff;
+            padding: 5px;
+            border-radius: 6px;
+            text-align: center;
+            
+            position: absolute;
+            z-index: 1;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+    `;
+
+    document.head.appendChild(style);
+};
 
 const createTooltip = (step = 0) => {
     if(step > 3){
@@ -95,5 +100,7 @@ const removeTooltip = (step) => {
     prevContainer.removeChild(tooltipDiv);
     prevContainer.appendChild(prevElement);
 };
+
+appendStyle();
 
 createTooltip();
