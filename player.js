@@ -67,7 +67,9 @@ const appendStyle = () => {
 };
 
 const createTooltip = (step = 0) => {
-    if(step > 3){
+    if(step === steps.length){
+        removeTooltip(step - 1);
+
         return;
     }
 
