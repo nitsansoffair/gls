@@ -37,10 +37,7 @@ const steps = [
     }
 ];
 
-const appendStyle = () => {
-    const style = document.createElement('style');
-
-    style.innerHTML = `
+const styleHTML = `
         .tooltip {
             position: relative;
         }
@@ -61,15 +58,22 @@ const appendStyle = () => {
         .tooltip:hover .tooltiptext {
             visibility: visible;
         }
-    `;
+   `;
 
+const appendStyle = () => {
+    const style = document.createElement('style');
+
+    style.id = 'glsStyle';
+    style.innerHTML = styleHTML;
     document.head.appendChild(style);
 };
 
 const createTooltip = (step = 0) => {
-    if(step === steps.length){
-        removeTooltip(step - 1);
+    if(step > 0){
+        removeTooltip(step - 1)
+    }
 
+    if(step === steps.length){
         return;
     }
 
@@ -79,10 +83,6 @@ const createTooltip = (step = 0) => {
     const element = document.querySelector(selector);
 
     steps[step].parentHTML = container;
-
-    if(step > 0){
-        removeTooltip(step - 1)
-    }
 
     container.removeChild(element);
     container.innerHTML += `
@@ -108,7 +108,28 @@ const removeTooltip = (step) => {
     prevContainer.appendChild(prevElement);
 };
 
-const tests = () => {
+const testStyle = () => {
+    appendStyle();
+
+    let style = document.querySelector('#glsStyle');
+
+    if(!style){
+        throw new Error('Style should exists!');
+    }
+
+    if(style.innerHTML !== styleHTML){
+        throw new Error(`Expected style HTML: ${styleHTML}, but got style HTML: ${style.innerHTML}!`);
+    }
+
+    document.head.removeChild(style);
+    style = document.querySelector('#glsStyle');
+
+    if(style){
+        throw new Error('Style should not exists!');
+    }
+};
+
+const testTooltip = () => {
     for(let step = 0; step < steps.length; step++){
         const { parentSelector, parentSelectorNumber = 0, selector, content, tooltipTextStyles } = steps[step];
 
@@ -150,8 +171,20 @@ const tests = () => {
             throw new Error(`Tooltip div at step: ${step} should not exists!`);
         }
     }
+};
+
+const tests = () => {
+    testStyle();
+
+    testTooltip();
 
     console.log('Tests passed!');
+};
+
+const start = () => {
+    appendStyle();
+
+    createTooltip();
 };
 
 try {
@@ -160,6 +193,4 @@ try {
     console.log(`A test has been failed: ${e.stack}`);
 }
 
-appendStyle();
-
-createTooltip();
+start();
