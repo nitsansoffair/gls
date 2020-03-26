@@ -2,7 +2,13 @@ const steps = [
     {
         parentSelector: '#lga',
         selector: '#hplogo',
-        content: '<p>Welcome to <em><strong>Google</strong></em>!</p>\n'
+        content: '<p>Welcome to <em><strong>Google</strong></em>!</p>\n',
+        tooltipTextStyles: `
+            bottom: 120px;
+        `,
+        tooltipStyles: `
+            width: 272px;
+        `
     },
     {
         parentSelector: '.gb_h.gb_i',
@@ -19,10 +25,10 @@ const steps = [
         parentSelector: '.A8SBwf',
         selector: '.RNNXgb',
         content: '<p>Enter a search query here and click ENTER!</p>\n',
-        tooltipTextStyles: `
+        tooltipTextStyles: `      
+            bottom: unset;
+            right: 450px;  
             top: 47px;
-            right: 450px;      
-            bottom: unset;  
         `
     },
     {
@@ -44,7 +50,6 @@ const styleHTML = `
         
         .tooltip .tooltiptext {    
             visibility: hidden;
-            bottom: 60%;
             background-color: black;
             color: #fff;
             padding: 5px;
@@ -77,7 +82,7 @@ const createTooltip = (step = 0) => {
         return;
     }
 
-    const { parentSelector, parentSelectorNumber = 0, selector, content, tooltipTextStyles } = steps[step];
+    const { parentSelector, parentSelectorNumber = 0, selector, content, tooltipTextStyles, tooltipStyles } = steps[step];
 
     const container = document.querySelectorAll(parentSelector)[parentSelectorNumber];
     const element = document.querySelector(selector);
@@ -86,7 +91,7 @@ const createTooltip = (step = 0) => {
 
     container.removeChild(element);
     container.innerHTML += `
-            <div id="tooltipdiv" class="tooltip">
+            <div id="tooltipdiv" class="tooltip" style="${tooltipStyles}">
                 <span class="tooltiptext" onclick="createTooltip(${step} + 1)" style="${tooltipTextStyles}">
                     ${content}
                 </span>   
