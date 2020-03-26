@@ -16,7 +16,6 @@ const steps = [
         selector: '.gb_g[data-pid="2"]',
         content: '<p>Click <strong>Images</strong> to go to images section</p>\n',
         tooltipTextStyles: `
-            bottom: unset;
             left: -100px;
             top: 25px;
         `
@@ -26,19 +25,29 @@ const steps = [
         selector: '.RNNXgb',
         content: '<p>Enter a search query here and click ENTER!</p>\n',
         tooltipTextStyles: `      
-            bottom: unset;
             right: 450px;  
             top: 47px;
         `
     },
     {
-        parentSelector: '.iblpc',
-        selector: '.hsuHs',
+        parentSelector: '.FPdoLc.tfB0Bf',
+        selector: '.gNO89b',
+        isNested: true,
         content: '<p>Click here to search</p>\n',
         tooltipTextStyles: `
-            bottom: 22px;
-            right: 12px;
+            bottom: -27px;
+            right: -113px;
             width: 100px;
+        `,
+        tooltipStyles: `
+            width: 130px;
+            height: 30px;
+            margin-left: 5px;
+        `,
+        containerStyles: `
+            ;
+            display: flex;
+            justify-content: center;
         `
     }
 ];
@@ -82,41 +91,57 @@ const createTooltip = (step = 0) => {
         return;
     }
 
-    const { parentSelector, parentSelectorNumber = 0, selector, content, tooltipTextStyles, tooltipStyles } = steps[step];
+    const { parentSelector, parentSelectorNumber = 0, selector, isNested = false, content, tooltipTextStyles, tooltipStyles, containerStyles } = steps[step];
 
     const container = document.querySelectorAll(parentSelector)[parentSelectorNumber];
-    const element = document.querySelector(selector);
+    const element = container.querySelector(selector);
 
     steps[step].parentHTML = container;
 
-    container.removeChild(element);
+    if(isNested){
+        container.children[0].removeChild(element);
+    } else {
+        container.removeChild(element);
+    }
+
     container.innerHTML += `
             <div id="tooltipdiv" class="tooltip" style="${tooltipStyles}">
                 <span class="tooltiptext" onclick="createTooltip(${step} + 1)" style="${tooltipTextStyles}">
                     ${content}
                 </span>   
-            </div> 
+            </div>
     `;
 
-    const tooltipDiv = document.querySelector('#tooltipdiv');
+    if(containerStyles){
+        steps[step].containerStylesOriginal = container.style.cssText;
+        container.style.cssText += containerStyles;
+    }
+
+    const tooltipDiv = container.querySelector('#tooltipdiv');
     tooltipDiv.appendChild(element);
 };
 
 const removeTooltip = (step) => {
-    const { parentSelector, parentSelectorNumber = 0, selector } = steps[step];
+    const { parentSelector, parentSelectorNumber = 0, selector, isNested = false, containerStylesOriginal } = steps[step];
 
     const prevContainer = document.querySelectorAll(parentSelector)[parentSelectorNumber];
-    const tooltipDiv = document.querySelector('#tooltipdiv');
-    const prevElement = document.querySelector(selector);
+    const tooltipDiv = prevContainer.querySelector('#tooltipdiv');
+    const prevElement = tooltipDiv.querySelector(selector);
 
     prevContainer.removeChild(tooltipDiv);
-    prevContainer.appendChild(prevElement);
+
+    if(isNested){
+        prevContainer.children[0].appendChild(prevElement);
+        prevContainer.style.cssText = containerStylesOriginal;
+    } else {
+        prevContainer.appendChild(prevElement);
+    }
 };
 
 const testStyle = () => {
     appendStyle();
 
-    let style = document.querySelector('#glsStyle');
+    let style = document.head.querySelector('#glsStyle');
 
     if(!style){
         throw new Error('Style should exists!');
@@ -136,21 +161,26 @@ const testStyle = () => {
 
 const testTooltip = () => {
     for(let step = 0; step < steps.length; step++){
-        const { parentSelector, parentSelectorNumber = 0, selector, content, tooltipTextStyles } = steps[step];
+        const { parentSelector, parentSelectorNumber = 0, isNested = false, selector, content, tooltipTextStyles, containerStyles } = steps[step];
 
         const container = document.querySelectorAll(parentSelector)[parentSelectorNumber];
         if(!container){
             throw new Error(`Container with selector: ${parentSelector} should exists!`);
         }
 
-        const element = document.querySelector(selector);
+        const element = container.querySelector(selector);
         if(!element){
             throw new Error(`Element with selector: ${selector} should exists!`);
         }
 
         steps[step].parentHTML = container;
 
-        container.removeChild(element);
+        if(isNested){
+            container.children[0].removeChild(element);
+        } else {
+            container.removeChild(element);
+        }
+
         container.innerHTML += `
             <div id="tooltipdiv" class="tooltip">
                 <span class="tooltiptext" onclick="createTooltip(${step} + 1)" style="${tooltipTextStyles}">
@@ -159,7 +189,16 @@ const testTooltip = () => {
             </div> 
     `;
 
-        let tooltipDiv = document.querySelector('#tooltipdiv');
+        if(containerStyles){
+            steps[step].containerStylesOriginal = container.style.cssText;
+            container.style.cssText += containerStyles;
+        }
+
+        if(container.style.cssText === steps[step].containerStylesOriginal){
+            throw new Error(`Container with selector: ${parentSelector} style should change!`);
+        }
+
+        let tooltipDiv = container.querySelector('#tooltipdiv');
         if(!tooltipDiv){
             throw new Error(`Tooltip div at step: ${step} should exists!`);
         }
@@ -171,7 +210,15 @@ const testTooltip = () => {
 
         removeTooltip(step);
 
-        tooltipDiv = document.querySelector('#tooltipdiv');
+        if(isNested){
+            const prevContainer = document.querySelectorAll(parentSelector)[parentSelectorNumber];
+
+            if(prevContainer.style.cssText !== steps[step].containerStylesOriginal){
+                throw new Error(`Container with selector: ${parentSelector} style should return to ${steps[step].containerStylesOriginal}!`);
+            }
+        }
+
+        tooltipDiv = container.querySelector('#tooltipdiv');
         if(tooltipDiv){
             throw new Error(`Tooltip div at step: ${step} should not exists!`);
         }
